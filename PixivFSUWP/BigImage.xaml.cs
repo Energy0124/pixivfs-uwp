@@ -254,5 +254,11 @@ namespace PixivFSUWP
                 await ShowTip(GetResourceString("NoInkPlain"));
             }
         }
+
+        private void BtnSetAsWallpaper_OnClick(object sender, RoutedEventArgs e)
+        {
+            //todo: implement set as wallpaper
+            throw new NotImplementedException();
+        }
     }
 }

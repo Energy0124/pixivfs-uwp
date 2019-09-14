@@ -37,6 +37,7 @@
                     <InkToolbarStencilButton/>
                 </InkToolbar>
             </CommandBar.Content>
+            <AppBarButton x:Name="btnSetAsWallpaper" Icon="Pictures" Label="Set As Wallpaper" x:Uid="SetAsWallpaper" Click="BtnSetAsWallpaper_OnClick"/>
             <AppBarButton x:Name="btnSaveImage" Icon="Save" x:Uid="SaveImage" Click="BtnSaveImage_Click"/>
             <AppBarToggleButton x:Name="btnDraw" Icon="Edit" x:Uid="Draw" Unchecked="BtnDraw_Unchecked" Checked="BtnDraw_Checked"/>
         </CommandBar>
