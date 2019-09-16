@@ -70,6 +70,10 @@ namespace PixivFSUWP
             itemsSource = new UserIllustsCollection(userid.ToString());
             itemsSource.CollectionChanged += ItemsSource_CollectionChanged;
             WaterfallListView.ItemsSource = itemsSource;
+            //make the detail page collapse by default
+            grdUserButton.Visibility = Visibility.Visible;
+            storyFade.Begin();
+            grdDetail.Visibility = Visibility.Collapsed;
             base.OnNavigatedTo(e);
             _ = loadContents();
         }
