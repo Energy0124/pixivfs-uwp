@@ -8,14 +8,14 @@
 
   <Identity
     Name="31db69de-89d1-4fa9-9878-fcd942f090ca"
-    Publisher="CN=Tobii"
-    Version="2.2.2.0" />
+    Publisher="CN=Energy0124"
+    Version="2.2.3.0" />
 
   <mp:PhoneIdentity PhoneProductId="31db69de-89d1-4fa9-9878-fcd942f090ca" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Pixiv UWP</DisplayName>
-    <PublisherDisplayName>Tobii</PublisherDisplayName>
+    <DisplayName>Pixiv UWP feat. Energy0124</DisplayName>
+    <PublisherDisplayName>Energy0124</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -32,10 +32,10 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="PixivFSUWP.App">
       <uap:VisualElements
-        DisplayName="Pixiv"
+        DisplayName="Pixiv feat. Energy0124"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="PixivFSUWP"
+        Description="PixivFSUWP feat. Energy0124"
         BackgroundColor="#33627f">
         <uap:DefaultTile  ShortName="Pixiv" Square71x71Logo="Assets\Square71x71Logo.png">
           <uap:ShowNameOnTiles>
@@ -57,5 +57,6 @@
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <uap:Capability Name="picturesLibrary"/>
   </Capabilities>
 </Package>

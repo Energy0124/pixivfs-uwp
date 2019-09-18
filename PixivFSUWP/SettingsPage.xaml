@@ -9,42 +9,66 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <ScrollViewer Background="{StaticResource PageBackGround}">
         <StackPanel Margin="0,75,0,0">
-            <TextBlock Margin="15,20,15,0" FontSize="18" FontWeight="Bold" x:Uid="CurrentUser"/>
+            <TextBlock Margin="15,20,15,0" FontSize="18" FontWeight="Bold" x:Uid="CurrentUser" />
             <Grid Margin="15,15,15,0" Width="Auto" HorizontalAlignment="Left">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Ellipse x:Name="avatar" Grid.RowSpan="3" Width="70" Height="70" Margin="0,0,10,0">
                     <Ellipse.Fill>
-                        <ImageBrush x:Name="imgAvatar"/>
+                        <ImageBrush x:Name="imgAvatar" />
                     </Ellipse.Fill>
                 </Ellipse>
                 <TextBlock Margin="0,2" HorizontalTextAlignment="Left" Grid.Column="1">Pixiv ID：</TextBlock>
-                <TextBlock Margin="0,2" HorizontalTextAlignment="Left" Grid.Row="1" Grid.Column="1" x:Uid="UserID"/>
-                <TextBlock Margin="0,2" HorizontalTextAlignment="Left" Grid.Row="2" Grid.Column="1" x:Uid="Email"/>
-                <TextBlock Margin="0,2" HorizontalTextAlignment="Left" Grid.Column="2" x:Name="txtID"/>
+                <TextBlock Margin="0,2" HorizontalTextAlignment="Left" Grid.Row="1" Grid.Column="1" x:Uid="UserID" />
+                <TextBlock Margin="0,2" HorizontalTextAlignment="Left" Grid.Row="2" Grid.Column="1" x:Uid="Email" />
+                <TextBlock Margin="0,2" HorizontalTextAlignment="Left" Grid.Column="2" x:Name="txtID" />
                 <StackPanel Margin="0,2" Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
-                    <TextBlock HorizontalTextAlignment="Left" x:Name="txtName"/>
-                    <TextBlock HorizontalTextAlignment="Left" x:Name="txtAccount" Foreground="Gray"/>
+                    <TextBlock HorizontalTextAlignment="Left" x:Name="txtName" />
+                    <TextBlock HorizontalTextAlignment="Left" x:Name="txtAccount" Foreground="Gray" />
                 </StackPanel>
-                <TextBlock Margin="0,2" Grid.Row="2" Grid.Column="2" HorizontalTextAlignment="Left" x:Name="txtEmail"/>
+                <TextBlock Margin="0,2" Grid.Row="2" Grid.Column="2" HorizontalTextAlignment="Left" x:Name="txtEmail" />
                 <StackPanel Grid.Row="3" Grid.ColumnSpan="3">
-                    <Button Style="{StaticResource ButtonRevealStyle}" BorderThickness="1.5" Margin="0,5,0,0" x:Name="btnLogout" Click="BtnLogout_Click" HorizontalAlignment="Stretch" x:Uid="Logout"/>
-                    <TextBlock FontSize="12" Foreground="Gray" x:Uid="LogoutWarning"/>
+                    <Button Style="{StaticResource ButtonRevealStyle}" BorderThickness="1.5" Margin="0,5,0,0"
+                            x:Name="btnLogout" Click="BtnLogout_Click" HorizontalAlignment="Stretch" x:Uid="Logout" />
+                    <TextBlock FontSize="12" Foreground="Gray" x:Uid="LogoutWarning" />
                 </StackPanel>
             </Grid>
-            <TextBlock Margin="15,20,15,0" FontSize="18" FontWeight="Bold" x:Uid="VersionInfo"/>
-            <TextBlock Margin="15,10,15,0" x:Name="txtVersion"/>
-            <TextBlock Margin="15,2,15,0" x:Name="txtPkgName"/>
-            <TextBlock Margin="15,2,15,0" x:Name="txtInsDate"/>
+            <TextBlock Margin="15,20,15,0" FontSize="18" FontWeight="Bold" x:Uid="Wallpaper" FontFamily="Segoe UI" />
+            <Grid Margin="15,15,15,15" HorizontalAlignment="Left">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Margin="0,2" HorizontalTextAlignment="Left" VerticalAlignment="Center" Grid.Column="0">Wallpaper folder: </TextBlock>
+                <TextBox Margin="0,2" HorizontalTextAlignment="Left" VerticalAlignment="Center"
+                         HorizontalAlignment="Left" Width="Auto" Grid.Column="1" x:Name="txtWallpaperFolder"
+                         PlaceholderText="Wallpaper folder" MinWidth="400" TextChanged="TxtWallpaperFolder_OnTextChanged"/>
+                <Button Margin="0,2" VerticalAlignment="Center" HorizontalAlignment="Center" Width="Auto"
+                        Grid.Column="2" x:Name="btnOpenFolder" Content="Browse..." Click="BtnOpenFolder_OnClick"/>
+                <TextBlock Margin="0,2" HorizontalTextAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1">AppData folder: </TextBlock>
+                <TextBox Margin="0,2" HorizontalTextAlignment="Left" VerticalAlignment="Center"
+                         HorizontalAlignment="Left" Width="Auto" Grid.Column="1" Grid.Row="1" x:Name="txtAppDataFolder"
+                         MinWidth="400" IsReadOnly="True"/>
+            </Grid>
+
+            <TextBlock Margin="15,20,15,0" FontSize="18" FontWeight="Bold" x:Uid="VersionInfo" />
+            <TextBlock Margin="15,10,15,0" x:Name="txtVersion" />
+            <TextBlock Margin="15,2,15,0" x:Name="txtPkgName" />
+            <TextBlock Margin="15,2,15,0" x:Name="txtInsDate" />
         </StackPanel>
     </ScrollViewer>
 </Page>

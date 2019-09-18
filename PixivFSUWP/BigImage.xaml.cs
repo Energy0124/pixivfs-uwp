@@ -10,8 +10,10 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
 using Windows.Storage.Provider;
+using Windows.System.UserProfile;
 using Windows.UI;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
@@ -36,11 +38,12 @@ namespace PixivFSUWP
     {
         bool _locked = false;
         Data.BigImageDetail parameter;
+
         public BigImage()
         {
             this.InitializeComponent();
             mainCanvas.InkPresenter.InputDeviceTypes = Windows.UI.Core.CoreInputDeviceTypes.Mouse
-                | Windows.UI.Core.CoreInputDeviceTypes.Pen;
+                                                       | Windows.UI.Core.CoreInputDeviceTypes.Pen;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -153,6 +156,7 @@ namespace PixivFSUWP
                     grdTip.Visibility = Visibility.Collapsed;
                     tips.RemoveAt(0);
                 }
+
                 _tip_busy = false;
             }
         }
@@ -161,37 +165,12 @@ namespace PixivFSUWP
         {
             FileSavePicker picker = new FileSavePicker();
             picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            picker.FileTypeChoices.Add(GetResourceString("ImageFilePlain"), new List<string>() { ".png" });
-            picker.SuggestedFileName = parameter.Title;
+            picker.FileTypeChoices.Add(GetResourceString("ImageFilePlain"), new List<string>() {".png"});
+            picker.SuggestedFileName = $"{parameter.Id}-{parameter.Author}-{parameter.Title}-{parameter.ItemId}";
             var file = await picker.PickSaveFileAsync();
             if (file != null)
             {
-                CachedFileManager.DeferUpdates(file);
-                using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
-                {
-                    var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
-                    var image = mainImg.Source as WriteableBitmap;
-                    var imageStream = image.PixelBuffer.AsStream();
-                    byte[] raw = new byte[imageStream.Length];
-                    await imageStream.ReadAsync(raw, 0, raw.Length);
-                    encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore,
-                        (uint)image.PixelWidth, (uint)image.PixelHeight, 96, 96, raw);
-                    await encoder.FlushAsync();
-                }
-                var updateStatus = await CachedFileManager.CompleteUpdatesAsync(file);
-                if (updateStatus != FileUpdateStatus.Complete)
-                {
-                    var messageDialog = new MessageDialog(GetResourceString("SaveImageFailedPlain"));
-                    messageDialog.Commands.Add(new UICommand(GetResourceString("RetryPlain"), async (a) => { await saveImage(); }));
-                    messageDialog.Commands.Add(new UICommand(GetResourceString("CancelPlain")));
-                    messageDialog.DefaultCommandIndex = 0;
-                    messageDialog.CancelCommandIndex = 1;
-                    await messageDialog.ShowAsync();
-                }
-                else
-                {
-                    await ShowTip(GetResourceString("SaveImageSucceededPlain"));
-                }
+                await SaveFile(file);
             }
         }
 
@@ -202,8 +181,8 @@ namespace PixivFSUWP
             {
                 FileSavePicker picker = new FileSavePicker();
                 picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-                picker.FileTypeChoices.Add(GetResourceString("SaveImagePlain"), new List<string>() { ".png" });
-                picker.FileTypeChoices.Add(GetResourceString("RawInkPlain"), new List<string>() { ".gif" });
+                picker.FileTypeChoices.Add(GetResourceString("SaveImagePlain"), new List<string>() {".png"});
+                picker.FileTypeChoices.Add(GetResourceString("RawInkPlain"), new List<string>() {".gif"});
                 picker.SuggestedFileName = GetResourceString("MyInkPlain");
                 var file = await picker.PickSaveFileAsync();
                 if (file != null)
@@ -213,8 +192,8 @@ namespace PixivFSUWP
                     {
                         if (file.FileType == ".png")
                         {
-                            var width = (int)mainCanvas.ActualWidth;
-                            var height = (int)mainCanvas.ActualHeight;
+                            var width = (int) mainCanvas.ActualWidth;
+                            var height = (int) mainCanvas.ActualHeight;
                             var device = CanvasDevice.GetSharedDevice();
                             var renderTarget = new CanvasRenderTarget(device, width, height, 96);
                             using (var ds = renderTarget.CreateDrawingSession())
@@ -222,6 +201,7 @@ namespace PixivFSUWP
                                 ds.Clear(Colors.White);
                                 ds.DrawInk(strokes);
                             }
+
                             await renderTarget.SaveAsync(stream, CanvasBitmapFileFormat.Png);
                         }
                         else
@@ -233,11 +213,13 @@ namespace PixivFSUWP
                             }
                         }
                     }
+
                     var updateStatus = await CachedFileManager.CompleteUpdatesAsync(file);
                     if (updateStatus != FileUpdateStatus.Complete)
                     {
                         var messageDialog = new MessageDialog(GetResourceString("SaveInkFailedPlain"));
-                        messageDialog.Commands.Add(new UICommand(GetResourceString("RetryPlain"), async (a) => { await saveStrokes(); }));
+                        messageDialog.Commands.Add(new UICommand(GetResourceString("RetryPlain"),
+                            async (a) => { await saveStrokes(); }));
                         messageDialog.Commands.Add(new UICommand(GetResourceString("CancelPlain")));
                         messageDialog.DefaultCommandIndex = 0;
                         messageDialog.CancelCommandIndex = 1;
@@ -257,8 +239,112 @@ namespace PixivFSUWP
 
         private void BtnSetAsWallpaper_OnClick(object sender, RoutedEventArgs e)
         {
+            _ = SaveAndSetWallpaper(WallpaperOption.Wallpaper);
+        }
+
+        private void BtnSetAsLockScreen_OnClick(object sender, RoutedEventArgs e)
+        {
+            _ = SaveAndSetWallpaper(WallpaperOption.LockScreen);
+        }
+
+        private void BtnSetAsWallpaperAndLockScreen_OnClick(object sender, RoutedEventArgs e)
+        {
+            _ = SaveAndSetWallpaper(WallpaperOption.WallpaperAndLockScreen);
+        }
+
+        private async Task SaveAndSetWallpaper(WallpaperOption wallpaperOption = WallpaperOption.Wallpaper)
+        {
             //todo: implement set as wallpaper
-            throw new NotImplementedException();
+            var futureAccessList = StorageApplicationPermissions.FutureAccessList;
+            StorageFolder wallpaperFolder = await futureAccessList.GetFolderAsync("WallpaperFolder");
+            var fileName = $"{parameter.Id}-{parameter.Author}-{parameter.Title}-{parameter.ItemId}.png";
+            StorageFile file = null;
+            if (await wallpaperFolder.TryGetItemAsync(fileName) != null)
+            {
+                file = await wallpaperFolder.GetFileAsync(fileName);
+            }
+            else
+            {
+                file = await wallpaperFolder.CreateFileAsync(fileName);
+            }
+            
+            if (file != null)
+            {
+                await SaveFile(file);
+                //copy file to local folder 
+                Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+                StorageFile copiedWallpaperFile = await file.CopyAsync(localFolder, file.Name,NameCollisionOption.ReplaceExisting);
+                UserProfilePersonalizationSettings profileSettings = UserProfilePersonalizationSettings.Current;
+                bool success = false;
+                if (UserProfilePersonalizationSettings.IsSupported())
+                {
+                    if (wallpaperOption == WallpaperOption.LockScreen)
+                    {
+                        success = await profileSettings.TrySetLockScreenImageAsync(copiedWallpaperFile);
+                    }
+                    else if (wallpaperOption == WallpaperOption.Wallpaper)
+                    {
+                        success = await profileSettings.TrySetWallpaperImageAsync(copiedWallpaperFile);
+                    }
+                    else
+                    {
+                        success = await profileSettings.TrySetLockScreenImageAsync(copiedWallpaperFile);
+                        success = await profileSettings.TrySetWallpaperImageAsync(copiedWallpaperFile);
+                    }
+                }
+                else
+                {
+                    await ShowTip("UserProfilePersonalizationSettings is not supported.");
+                }
+
+                if (success)
+                {
+                    await ShowTip(GetResourceString("SetWallpaperSucceededPlain"));
+                }
+                else
+                {
+                    await ShowTip(GetResourceString("SetWallpaperFailedPlain"));
+                }
+            }
+        }
+
+        private enum WallpaperOption
+        {
+            Wallpaper,
+            LockScreen,
+            WallpaperAndLockScreen
+        }
+
+        private async Task SaveFile(StorageFile file)
+        {
+            CachedFileManager.DeferUpdates(file);
+            using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
+                var image = mainImg.Source as WriteableBitmap;
+                var imageStream = image.PixelBuffer.AsStream();
+                byte[] raw = new byte[imageStream.Length];
+                await imageStream.ReadAsync(raw, 0, raw.Length);
+                encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore,
+                    (uint) image.PixelWidth, (uint) image.PixelHeight, 96, 96, raw);
+                await encoder.FlushAsync();
+            }
+
+            var updateStatus = await CachedFileManager.CompleteUpdatesAsync(file);
+            if (updateStatus != FileUpdateStatus.Complete)
+            {
+                var messageDialog = new MessageDialog(GetResourceString("SaveImageFailedPlain"));
+                messageDialog.Commands.Add(new UICommand(GetResourceString("RetryPlain"),
+                    async (a) => { await saveImage(); }));
+                messageDialog.Commands.Add(new UICommand(GetResourceString("CancelPlain")));
+                messageDialog.DefaultCommandIndex = 0;
+                messageDialog.CancelCommandIndex = 1;
+                await messageDialog.ShowAsync();
+            }
+            else
+            {
+                await ShowTip(GetResourceString("SaveImageSucceededPlain"));
+            }
         }
     }
 }

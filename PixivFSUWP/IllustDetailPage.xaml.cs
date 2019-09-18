@@ -177,6 +177,7 @@ namespace PixivFSUWP
                     int counter = 0;
                     foreach (var i in illust.OriginalUrls)
                     {
+
                         if (_emergencyStop)
                         {
                             return;
@@ -185,7 +186,8 @@ namespace PixivFSUWP
                         (ImageList.ItemsSource as ObservableCollection<ViewModels.ImageItemViewModel>)
                             .Add(new ViewModels.ImageItemViewModel()
                             {
-                                ImageSource = await Data.OverAll.LoadImageAsync(i, 1, 1)
+                                ImageSource = await Data.OverAll.LoadImageAsync(i, 1, 1),
+                                ItemId = counter
                             });
                     }
                     txtLoadingStatus.Text = string.Format(GetResourceString("PageInfoPlain"), illust.OriginalUrls.Count);
@@ -240,7 +242,9 @@ namespace PixivFSUWP
             var Item = e.ClickedItem as ViewModels.ImageItemViewModel;
             await Data.OverAll.ShowNewWindow(typeof(BigImage), new Data.BigImageDetail()
             {
+                ItemId = Item.ItemId,
                 Title = illust.Title,
+                Id = illust.IllustID,
                 Width = Item.ImageSource.PixelWidth,
                 Height = Item.ImageSource.PixelHeight,
                 Author = illust.Author,

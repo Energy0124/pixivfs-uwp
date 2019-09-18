@@ -9,6 +9,7 @@ using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Security.Credentials;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -72,6 +73,12 @@ namespace PixivFSUWP
             txtAccount.Text = "@" + currentUser.UserAccount;
             txtEmail.Text = currentUser.Email;
             imgAvatar.ImageSource = await imgTask;
+            ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            var myPictures = await Windows.Storage.StorageLibrary.GetLibraryAsync(Windows.Storage.KnownLibraryId.Pictures);
+            Windows.Storage.StorageFolder savePicturesFolder = myPictures.SaveFolder;
+            txtWallpaperFolder.Text = localSettings.Values["WallpaperFolder"] as string ?? savePicturesFolder.Path;
+            Windows.Storage.StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            txtAppDataFolder.Text = localFolder.Path;
         }
 
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
@@ -86,6 +93,41 @@ namespace PixivFSUWP
             finally
             {
                 ((Frame.Parent as Grid).Parent as MainPage).Frame.Navigate(typeof(LoginPage));
+            }
+        }
+
+        private void TxtWallpaperFolder_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            SaveWallpaperFolder(txtWallpaperFolder.Text);
+        }
+
+        private void SaveWallpaperFolder(string path)
+        {
+// Save a setting locally on the device
+            ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            localSettings.Values["WallpaperFolder"] = path;
+        }
+
+        private void BtnOpenFolder_OnClick(object sender, RoutedEventArgs e)
+        {
+            _ = PickWallpaperFolder();
+        }
+
+        private async Task PickWallpaperFolder()
+        {
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                // Application now has read/write access to all contents in the picked folder
+                // (including other sub-folder contents)
+                Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.AddOrReplace("WallpaperFolder",
+                    folder);
+                txtWallpaperFolder.Text = folder.Path;
+                SaveWallpaperFolder(folder.Path);
             }
         }
     }

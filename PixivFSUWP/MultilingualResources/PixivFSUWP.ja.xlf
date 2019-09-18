@@ -606,6 +606,31 @@
           <target state="translated">Direct Connection (!Experimental!)</target>
           <note from="MultilingualBuild" annotates="source" priority="2">CheckBox</note>
         </trans-unit>
+        <trans-unit id="Wallpaper.Text" translate="yes" xml:space="preserve">
+          <source>Wallpaper</source>
+          <target state="new">Wallpaper</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">TextBlock</note>
+        </trans-unit>
+        <trans-unit id="SaveWallpaperFailedPlain" translate="yes" xml:space="preserve">
+          <source>Failed to save Wallpaper</source>
+          <target state="new">Failed to save Wallpaper</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">PlainText</note>
+        </trans-unit>
+        <trans-unit id="SaveWallpaperSucceededPlain" translate="yes" xml:space="preserve">
+          <source>Wallpaper Saved</source>
+          <target state="new">Wallpaper Saved</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">PlainText</note>
+        </trans-unit>
+        <trans-unit id="SetWallpaperFailedPlain" translate="yes" xml:space="preserve">
+          <source>Failed to set Wallpaper</source>
+          <target state="new">Failed to set Wallpaper</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">PlainText</note>
+        </trans-unit>
+        <trans-unit id="SetWallpaperSucceededPlain" translate="yes" xml:space="preserve">
+          <source>Wallpaper Set</source>
+          <target state="new">Wallpaper Set</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">PlainText</note>
+        </trans-unit>
       </group>
     </body>
   </file>
