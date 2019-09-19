@@ -120,15 +120,16 @@ namespace PixivFSUWP
             txtChair.Text = _getHW(detail.Chair);
             txtBtnFollow.Text = detail.IsFollowed ? GetResourceString("FollowingPlain") : GetResourceString("NotFollowingPlain");
             btnFollow.IsChecked = detail.IsFollowed;
+            btnMinFollow.IsChecked = detail.IsFollowed;
             imgAvatar.ImageSource = await Data.OverAll.LoadImageAsync(detail.AvatarUrl);
             imgAuthor.ImageSource = imgAvatar.ImageSource;
         }
 
         private void WaterfallContent_Loaded(object sender, RoutedEventArgs e)
         {
-            if (ActualWidth < 700) (sender as Controls.WaterfallContentPanel).Colums = 3;
-            else if (ActualWidth < 900) (sender as Controls.WaterfallContentPanel).Colums = 4;
-            else if (ActualWidth < 1100) (sender as Controls.WaterfallContentPanel).Colums = 5;
+            if (ActualWidth < 1600) (sender as Controls.WaterfallContentPanel).Colums = 3;
+            else if (ActualWidth < 2000) (sender as Controls.WaterfallContentPanel).Colums = 4;
+            else if (ActualWidth < 2400) (sender as Controls.WaterfallContentPanel).Colums = 5;
             else (sender as Controls.WaterfallContentPanel).Colums = 6;
         }
 
@@ -178,7 +179,10 @@ namespace PixivFSUWP
                 if (res)
                 {
                     btnSender.IsChecked = true;
+                    btnFollow.IsChecked = true;
+                    btnMinFollow.IsChecked = true;
                     txtBtnFollow.Text = GetResourceString("FollowingPlain");
+                    txtBtnMinFollow.Text = GetResourceString("FollowingPlain");
                 }
                 btnSender.IsEnabled = true;
             }
@@ -201,7 +205,10 @@ namespace PixivFSUWP
                 if (res)
                 {
                     btnSender.IsChecked = false;
+                    btnFollow.IsChecked = false;
+                    btnMinFollow.IsChecked = false;
                     txtBtnFollow.Text = GetResourceString("NotFollowingPlain");
+                    txtBtnMinFollow.Text = GetResourceString("NotFollowingPlain");
                 }
                 btnSender.IsEnabled = true;
             }

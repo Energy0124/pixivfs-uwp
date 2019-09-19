@@ -40,6 +40,7 @@
             <AppBarButton x:Name="btnSetAsWallpaper" Icon="Pictures" Label="Set As Wallpaper" x:Uid="SetAsWallpaper" Click="BtnSetAsWallpaper_OnClick"/>
             <AppBarButton x:Name="btnSetAsLockScreen" Icon="Pictures" Label="Set As LockScreen" x:Uid="SetAsLockScreen" Click="BtnSetAsLockScreen_OnClick"/>
             <AppBarButton x:Name="btnSetAsWallpaperAndLockScreen" Icon="Pictures" Label="Set As Wallpaper And LockScreen" x:Uid="SetAsWallpaperAndLockScreen" Click="BtnSetAsWallpaperAndLockScreen_OnClick"/>
+            <AppBarButton x:Name="btnSaveWallpaper" Icon="Save" Label="Save To Wallpaper Folder" Click="BtnSaveWallpaper_OnClick"/>
             <AppBarButton x:Name="btnSaveImage" Icon="Save" x:Uid="SaveImage" Click="BtnSaveImage_Click"/>
             <AppBarToggleButton x:Name="btnDraw" Icon="Edit" x:Uid="Draw" Unchecked="BtnDraw_Unchecked" Checked="BtnDraw_Checked"/>
         </CommandBar>

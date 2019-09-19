@@ -254,7 +254,7 @@ namespace PixivFSUWP
 
         private async Task SaveAndSetWallpaper(WallpaperOption wallpaperOption = WallpaperOption.Wallpaper)
         {
-            //todo: implement set as wallpaper
+
             var futureAccessList = StorageApplicationPermissions.FutureAccessList;
             StorageFolder wallpaperFolder = await futureAccessList.GetFolderAsync("WallpaperFolder");
             var fileName = $"{parameter.Id}-{parameter.Author}-{parameter.Title}-{parameter.ItemId}.png";
@@ -344,6 +344,27 @@ namespace PixivFSUWP
             else
             {
                 await ShowTip(GetResourceString("SaveImageSucceededPlain"));
+            }
+        }
+
+        private async void BtnSaveWallpaper_OnClick(object sender, RoutedEventArgs e)
+        {
+            var futureAccessList = StorageApplicationPermissions.FutureAccessList;
+            StorageFolder wallpaperFolder = await futureAccessList.GetFolderAsync("WallpaperFolder");
+            var fileName = $"{parameter.Id}-{parameter.Author}-{parameter.Title}-{parameter.ItemId}.png";
+            StorageFile file = null;
+            if (await wallpaperFolder.TryGetItemAsync(fileName) != null)
+            {
+                file = await wallpaperFolder.GetFileAsync(fileName);
+            }
+            else
+            {
+                file = await wallpaperFolder.CreateFileAsync(fileName);
+            }
+
+            if (file != null)
+            {
+                await SaveFile(file);
             }
         }
     }

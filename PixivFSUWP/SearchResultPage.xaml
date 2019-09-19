@@ -13,7 +13,7 @@
             <VisualStateGroup x:Name="AdaptiveStates">
                 <VisualState x:Name="C6">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1100" />
+                        <AdaptiveTrigger MinWindowWidth="2400" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="WaterfallContent.Colums" Value="6"/>
@@ -21,7 +21,7 @@
                 </VisualState>
                 <VisualState x:Name="C5">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="900" />
+                        <AdaptiveTrigger MinWindowWidth="2000" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="WaterfallContent.Colums" Value="5"/>
@@ -29,7 +29,7 @@
                 </VisualState>
                 <VisualState x:Name="C4">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="700" />
+                        <AdaptiveTrigger MinWindowWidth="1600" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="WaterfallContent.Colums" Value="4"/>
