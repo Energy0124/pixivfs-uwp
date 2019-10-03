@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Security.Credentials;
 using Windows.Storage;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -129,6 +130,12 @@ namespace PixivFSUWP
                 txtWallpaperFolder.Text = folder.Path;
                 SaveWallpaperFolder(folder.Path);
             }
+        }
+
+        private async void BtnGithub_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new
+                Uri(@"https://github.com/tobiichiamane/pixivfs-uwp"));
         }
     }
 }

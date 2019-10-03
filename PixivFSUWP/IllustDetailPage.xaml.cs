@@ -93,6 +93,9 @@ namespace PixivFSUWP
                 Data.Backstack.Default.Push(typeof(IllustDetailPage), illustID);
                 ((Frame.Parent as Grid)?.Parent as MainPage)?.UpdateNavButtonState();
             }
+            (listComments.ItemsSource as Data.CommentsCollection)?.AvatarLoader?.EmergencyStop();
+            (listComments.ItemsSource as Data.CommentsCollection)?.StopLoading();
+            (listComments.ItemsSource as Data.CommentsCollection)?.Clear();
             GC.Collect();
             base.OnNavigatedFrom(e);
         }
@@ -125,6 +128,7 @@ namespace PixivFSUWP
                 txtAuthorAccount.Text = string.Format("@{0}", illust.AuthorAccount);
                 txtCaption.Text = (illust.Caption == "") ? GetResourceString("NoCaptionPlain") : Regex.Replace(illust.Caption.Replace("<br />", "\n"), "<[^>]+>", "");
                 txtCommentTitle.Text = GetResourceString("CommentsPlain");
+                btnNewComment.Visibility = Visibility.Visible;
                 listComments.ItemsSource = new Data.CommentsCollection(illustID.ToString());
                 txtLoadingStatus.Text = GetResourceString("CreatingTimelinePlain");
                 AdaptiveCard card = new AdaptiveCard("1.1");

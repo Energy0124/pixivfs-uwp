@@ -7,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,6 +23,8 @@ namespace PixivFSUWP
     /// </summary>
     sealed partial class App : Application
     {
+        Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 已执行，逻辑上等同于 main() 或 WinMain()。
@@ -30,6 +33,19 @@ namespace PixivFSUWP
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            this.UnhandledException += App_UnhandledException;
+        }
+
+        private async void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+            if (localSettings.Values.ContainsKey("exception"))
+                localSettings.Values.Remove("exception");
+            localSettings.Values["exception"] = e.Exception.ToString();
+            localSettings.Values["isCrashed"] = true;
+            MessageDialog dialog = new MessageDialog("Pixiv UWP has crashed. Please restart this app in order to report this issue.\n程序已崩溃，请重启本应用以便于报告此问题。", "Crashed/程序崩溃");
+            await dialog.ShowAsync();
+            this.Exit();
         }
 
         protected override void OnActivated(IActivatedEventArgs args)
@@ -71,7 +87,7 @@ namespace PixivFSUWP
         /// 将在启动应用程序以打开特定文件等情况下使用。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -97,10 +113,27 @@ namespace PixivFSUWP
             {
                 if (rootFrame.Content == null)
                 {
-                    // 当导航堆栈尚未还原时，导航到第一页，
-                    // 并通过将所需信息作为导航参数传入来配置
-                    // 参数
-                    rootFrame.Navigate(typeof(LoginPage), e.Arguments);
+                    //检测上次的崩溃
+                    if (localSettings.Values["isCrashed"] != null && (bool)localSettings.Values["isCrashed"] == true)
+                    {
+                        localSettings.Values.Remove("isCrashed");
+                        var yesCommand = new UICommand("Yes/是");
+                        var noCommand = new UICommand("No/否");
+                        MessageDialog dialog = new MessageDialog("A crash has been detected in your last session. Do you want to report this issue?\n在您上次的会话中我们探测到一次崩溃。请问您要报告此问题吗？", "Crash Report/错误报告");
+                        dialog.Commands.Add(yesCommand);
+                        dialog.Commands.Add(noCommand);
+                        dialog.DefaultCommandIndex = 0;
+                        var cmd = await dialog.ShowAsync();
+                        if (cmd == yesCommand)
+                        {
+                            rootFrame.Navigate(typeof(ReportIssuePage), e.Arguments);
+                        }
+                        else
+                        {
+                            rootFrame.Navigate(typeof(LoginPage), e.Arguments);
+                        }
+                    }
+                    else rootFrame.Navigate(typeof(LoginPage), e.Arguments);
                 }
                 // 确保当前窗口处于活动状态
                 Window.Current.Activate();

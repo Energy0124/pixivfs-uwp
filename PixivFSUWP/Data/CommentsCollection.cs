@@ -20,8 +20,14 @@ namespace PixivFSUWP.Data
         bool _emergencyStop = false;
         EventWaitHandle pause = new ManualResetEvent(true);
         readonly string illustid;
+        List<ViewModels.CommentViewModel> ChildrenComments = new List<ViewModels.CommentViewModel>();
+        public CommentAvatarLoader AvatarLoader;
 
-        public CommentsCollection(string IllustID) => illustid = IllustID;
+        public CommentsCollection(string IllustID)
+        {
+            illustid = IllustID;
+            AvatarLoader = new CommentAvatarLoader(this);
+        }
 
         public bool HasMoreItems
         {
@@ -98,17 +104,56 @@ namespace PixivFSUWP.Data
                     }
                     Data.IllustCommentItem recommendi = Data.IllustCommentItem.FromJsonValue(recillust.GetObject());
                     var recommendmodel = ViewModels.CommentViewModel.FromItem(recommendi);
-                    //await recommendmodel.LoadAvatarAsync();
-                    Add(recommendmodel);
-                    toret.Count++;
+                    //查找是否存在子回复
+                    var children = from item
+                                   in ChildrenComments
+                                   where item.ParentID == recommendmodel.ID
+                                   select item;
+                    children = children.ToList();
+                    if (children.Count() > 0)
+                    {
+                        //存在子回复
+                        recommendmodel.ChildrenComments = new ObservableCollection<ViewModels.CommentViewModel>();
+                        foreach (var child in children)
+                        {
+                            if (child.ChildrenComments != null)
+                            {
+                                foreach (var childschild in child.ChildrenComments)
+                                {
+                                    childschild.Comment = string.Format("Re: {0}: {1}",
+                                        child.UserName, childschild.Comment);
+                                    recommendmodel.ChildrenComments.Add(childschild);
+                                }
+                                child.ChildrenComments.Clear();
+                                child.ChildrenComments = null;
+                                GC.Collect();
+                            }
+                            recommendmodel.ChildrenComments.Insert(0, child);
+                            ChildrenComments.Remove(child);
+                        }
+                    }
+                    //检查自己是不是子回复
+                    if (recommendmodel.ParentID != -1)
+                    {
+                        //自己也是子回复
+                        ChildrenComments.Add(recommendmodel);
+                    }
+                    else
+                    {
+                        //自己并非子回复
+                        Add(recommendmodel);
+                        toret.Count++;
+                    }
                 }
                 return toret;
             }
             finally
             {
                 _busy = false;
+                _ = AvatarLoader.LoadAvatars();
                 if (_emergencyStop)
                 {
+                    AvatarLoader.EmergencyStop();
                     nexturl = "";
                     Clear();
                     GC.Collect();

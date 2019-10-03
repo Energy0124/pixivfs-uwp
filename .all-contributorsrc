@@ -1,0 +1,77 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "chenxuuu",
+      "name": "chenxuuu",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/10357394?v=4",
+      "profile": "https://www.chenxublog.com/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "SakuraSa233",
+      "name": "逢坂桜",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/24848528?v=4",
+      "profile": "https://qaq.jp",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "TuMIer",
+      "name": "TuMIer",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/45781074?v=4",
+      "profile": "https://github.com/TuMIer",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "RazeSoldier",
+      "name": "Raze Soldier",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/29511518?v=4",
+      "profile": "http://razesoldier.cn",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Funny-ppt",
+      "name": "Funny-ppt",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/48616775?v=4",
+      "profile": "https://github.com/Funny-ppt",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "dsyo2008",
+      "name": "dsyo2008",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3739056?v=4",
+      "profile": "https://github.com/dsyo2008",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "ZeroSimple",
+      "name": "Henry He",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/22572927?v=4",
+      "profile": "https://github.com/ZeroSimple",
+      "contributions": [
+        "bug"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "pixivfs-uwp",
+  "projectOwner": "tobiichiamane",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}

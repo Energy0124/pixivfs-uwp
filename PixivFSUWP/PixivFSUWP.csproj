@@ -146,10 +146,12 @@
     <Compile Include="Controls\WaterfallContentPanel.cs" />
     <Compile Include="Controls\WaterfallListView.cs" />
     <Compile Include="Converters\BookmarkHeartVisibilityConverter.cs" />
+    <Compile Include="Converters\ChildrenCommentVisibilityConverter.cs" />
     <Compile Include="Converters\MultiPageVisibilityConverter.cs" />
     <Compile Include="Data\Backstack.cs" />
     <Compile Include="Data\BigImageDetail.cs" />
     <Compile Include="Data\BookmarkIllustsCollection.cs" />
+    <Compile Include="Data\CommentAvatarLoader.cs" />
     <Compile Include="Data\CommentsCollection.cs" />
     <Compile Include="Data\CurrentUser.cs" />
     <Compile Include="Data\FollowingIllustsCollection.cs" />
@@ -175,6 +177,9 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportIssuePage.xaml.cs">
+      <DependentUpon>ReportIssuePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
@@ -207,6 +212,7 @@
     <PRIResource Include="Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\GitHub-Mark-32px.png" />
     <Content Include="Assets\LoginBG.jpg" />
     <Content Include="Assets\PixivHeader.png" />
     <Content Include="Assets\PixivText.png" />
@@ -240,6 +246,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ReportIssuePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SearchPage.xaml">
       <SubType>Designer</SubType>
@@ -276,7 +286,7 @@
       <Version>5.1.1</Version>
     </PackageReference>
     <PackageReference Include="PixivCS">
-      <Version>0.1.14</Version>
+      <Version>0.2.2</Version>
     </PackageReference>
     <PackageReference Include="Win2D.uwp">
       <Version>1.23.0</Version>

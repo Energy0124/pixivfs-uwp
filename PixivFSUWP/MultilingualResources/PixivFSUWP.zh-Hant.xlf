@@ -631,6 +631,11 @@
           <target state="new">Wallpaper Set</target>
           <note from="MultilingualBuild" annotates="source" priority="2">PlainText</note>
         </trans-unit>
+        <trans-unit id="NewComment.Content" translate="yes" xml:space="preserve">
+          <source>New comment</source>
+          <target state="translated">撰写评论</target>
+          <note from="MultilingualBuild" annotates="source" priority="2">ToggleButton</note>
+        </trans-unit>
       </group>
     </body>
   </file>
